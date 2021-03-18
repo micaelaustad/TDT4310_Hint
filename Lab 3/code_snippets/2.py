@@ -7,7 +7,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import re
 from sklearn.model_selection import train_test_split
-
+from sklearn.naive_bayes import MultinomialNB
 stemmer = stem.PorterStemmer()
 content = []
 stopwords = set(stopwords.words('english'))
@@ -45,11 +45,15 @@ X_train, X_test, y_train, y_test = train_test_split(
 vectorizer = TfidfVectorizer()
 X_train = vectorizer.fit_transform(X_train)
 # OMG I AM MACHINE LEARNING!
-svm = svm.SVC(C=1000)
-svm.fit(X_train, y_train)
+gnb = MultinomialNB()
+gnb.fit(X_train, y_train)
 # Evaluate performacnce
 X_test = vectorizer.transform(X_test)
-y_pred = svm.predict(X_test)
+y_pred = gnb.predict(X_test)
+
+for pred in gnb.predict_proba(X_test):
+    print(
+        f"Likelyhood for begin spam {pred[0]} | Likelyhood for begin ham {pred[1]}")
 
 #Percision and recall
 print(confusion_matrix(y_test, y_pred))
